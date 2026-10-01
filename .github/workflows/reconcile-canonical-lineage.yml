@@ -1,0 +1,110 @@
+name: Reconcile Canonical Lineage
+
+on:
+  schedule:
+    - cron: "13,43 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: mirror-nest-lineage
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    name: Reconcile DataNest main lineage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Mirror-Nest main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch canonical DataNest main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote add canonical https://github.com/DataNest-Supository/DataNest.git
+          git fetch canonical main --prune
+
+      - name: Compare declared lineage
+        id: compare
+        shell: bash
+        run: |
+          set -euo pipefail
+          canonical_sha="$(git rev-parse canonical/main)"
+          declared_sha="$(jq -r '.source.sha' config/mirror-nest.manifest.json)"
+          echo "canonical_sha=$canonical_sha" >> "$GITHUB_OUTPUT"
+          echo "declared_sha=$declared_sha" >> "$GITHUB_OUTPUT"
+          if [ "$canonical_sha" = "$declared_sha" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare lineage reconciliation branch
+        if: steps.compare.outputs.changed == 'true'
+        id: branch
+        shell: bash
+        env:
+          CANONICAL_SHA: ${{ steps.compare.outputs.canonical_sha }}
+        run: |
+          set -euo pipefail
+          branch="sync/canonical-lineage-${CANONICAL_SHA:0:12}"
+          git switch -c "$branch"
+
+          tmp="$(mktemp)"
+          jq --arg sha "$CANONICAL_SHA" '
+            .source.sha = $sha |
+            .provenance.digest = ("sha256:canonical-" + $sha)
+          ' config/mirror-nest.manifest.json > "$tmp"
+          mv "$tmp" config/mirror-nest.manifest.json
+
+          tmp="$(mktemp)"
+          jq --arg sha "$CANONICAL_SHA" '
+            .canonicalSha = $sha |
+            .lineageStatus = "reconciled"
+          ' .datanest/coordination/canonical-lineage.json > "$tmp"
+          mv "$tmp" .datanest/coordination/canonical-lineage.json
+
+          git add config/mirror-nest.manifest.json .datanest/coordination/canonical-lineage.json
+          git -c user.name="github-actions[bot]"               -c user.email="41898282+github-actions[bot]@users.noreply.github.com"               commit -m "chore: reconcile canonical DataNest lineage"
+          git push origin "$branch"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Create or reuse reconciliation PR
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.branch.outputs.branch }}
+          CANONICAL_SHA: ${{ steps.compare.outputs.canonical_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/DataNest-Supository/MirrorNest/pulls"
+          open="$(curl -fsSL             -H "Authorization: Bearer $GITHUB_TOKEN"             -H "Accept: application/vnd.github+json"             "$api?state=open&base=main&head=DataNest-Supository:$BRANCH")"
+
+          if [ "$(printf '%s' "$open" | jq 'length')" -gt 0 ]; then
+            echo "Existing reconciliation PR: $(printf '%s' "$open" | jq -r '.[0].html_url')"
+            exit 0
+          fi
+
+          body="Reconcile Mirror-Nest lineage to DataNest main at $CANONICAL_SHA. This updates provenance only; it does not copy production state, grant production authority, or auto-promote anything."
+          jq -n             --arg title "Reconcile canonical DataNest lineage"             --arg head "$BRANCH"             --arg body "$body"             '{title:$title,head:$head,base:"main",body:$body}' |
+            curl -fsSL -X POST               -H "Authorization: Bearer $GITHUB_TOKEN"               -H "Accept: application/vnd.github+json"               -H "X-GitHub-Api-Version: 2022-11-28"               "$api"               --data-binary @- |
+            jq -e '.number and .html_url' >/dev/null
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Mirror-Nest lineage reconciliation"
+            echo "- Canonical SHA: ${{ steps.compare.outputs.canonical_sha }}"
+            echo "- Declared SHA: ${{ steps.compare.outputs.declared_sha }}"
+            echo "- Reconciliation required: ${{ steps.compare.outputs.changed }}"
+            echo "- Automatic promotion: disabled"
+          } >> "$GITHUB_STEP_SUMMARY"
