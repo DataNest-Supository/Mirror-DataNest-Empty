@@ -1,6 +1,6 @@
 {
   "schemaVersion":"mirror-nest-v1",
-  "repository":"DataNest-Supository/Mirror-Nest",
+  "repository":"DataNest-Supository/MirrorNest",
   "canonicalRepository":"DataNest-Supository/DataNest",
   "role":"mirror-exchange",
   "purpose":"Controlled landing and validation surface for canonical DataNest snapshots, provenance, integration evidence, and owner-directed handoff.",
