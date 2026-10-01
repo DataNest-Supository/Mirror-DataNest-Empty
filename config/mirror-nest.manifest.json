@@ -1,6 +1,6 @@
 {
   "schemaVersion":"mirror-nest-manifest-v1",
-  "repository":"DataNest-Supository/Mirror-Nest",
+  "repository":"DataNest-Supository/MirrorNest",
   "source":{"repository":"DataNest-Supository/DataNest","branch":"main","sha":"02f4cfcf8317ebc87b8b71276db74996a528fd04"},
   "mirror":{"branch":"main","purpose":"mirror-exchange"},
   "scope":{"mode":"declared-snapshot","productionArtifactsIncluded":false,"secretsIncluded":false,"backendStateIncluded":false},
