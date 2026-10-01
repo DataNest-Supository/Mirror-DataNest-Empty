@@ -1,7 +1,7 @@
 {
   "schemaVersion":"mirror-nest-intake-v1",
   "repository":"DataNest-Supository/MirrorNest",
-  "acceptedRoots":["snapshots/","handoff/","evidence/","config/","docs/","scripts/","tests/","\.github/","\.datanest/"],
+  "acceptedRoots":["snapshots/","handoff/","evidence/","config/","docs/","scripts/","tests/",".github/",".datanest/"],
   "forbiddenPatterns":[
     "(^|/)(\.env|\.env\.[^/]+)$",
     "(^|/)(id_rsa|id_ed25519|credentials|secrets?)(\.|/|$)",
