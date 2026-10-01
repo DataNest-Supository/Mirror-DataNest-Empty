@@ -1,6 +1,6 @@
 # Mirror-Nest
 
-Mirror-Nest is the lightweight mirror-exchange surface for the DataNest estate.
+Mirror-Nest (`DataNest-Supository/MirrorNest`) is the lightweight mirror-exchange surface for the DataNest estate.
 
 It is intentionally **not** a second production system of record. Its functions are:
 
@@ -12,7 +12,7 @@ It is intentionally **not** a second production system of record. Its functions 
 ## Authority boundary
 
 - Canonical source: `DataNest-Supository/DataNest`
-- Mirror exchange: `DataNest-Supository/Mirror-Nest`
+- Mirror exchange: `DataNest-Supository/MirrorNest`
 - Production authority: DataNest only
 - Canonical release authority: DataNest only
 - Automatic reverse promotion: disabled
