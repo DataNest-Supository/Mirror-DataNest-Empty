@@ -1,9 +1,29 @@
 {
-  "schemaVersion":"mirror-nest-manifest-v1",
-  "repository":"DataNest-Supository/MirrorNest",
-  "source":{"repository":"DataNest-Supository/DataNest","branch":"main","sha":"02f4cfcf8317ebc87b8b71276db74996a528fd04"},
-  "mirror":{"branch":"main","purpose":"mirror-exchange"},
-  "scope":{"mode":"declared-snapshot","productionArtifactsIncluded":false,"secretsIncluded":false,"backendStateIncluded":false},
-  "provenance":{"immutableSourceReference":true,"digest":"sha256:pending-refresh","validatedBy":"Mirror-Nest Validation Tree"},
-  "handoff":{"eligibleForGovernedReview":true,"automaticPromotion":false}
+  "schemaVersion": "mirror-nest-manifest-v1",
+  "repository": "DataNest-Supository/MirrorNest",
+  "source": {
+    "repository": "DataNest-Supository/DataNest",
+    "branch": "main",
+    "sha": "02f4cfcf8317ebc87b8b71276db74996a528fd04"
+  },
+  "mirror": {
+    "branch": "main",
+    "purpose": "mirror-exchange"
+  },
+  "scope": {
+    "mode": "declared-snapshot",
+    "productionArtifactsIncluded": false,
+    "secretsIncluded": false,
+    "backendStateIncluded": false
+  },
+  "provenance": {
+    "immutableSourceReference": true,
+    "validatedBy": "Mirror-Nest Validation Tree",
+    "sourceCommitId": "02f4cfcf8317ebc87b8b71276db74996a528fd04",
+    "digestStatus": "not-computed"
+  },
+  "handoff": {
+    "eligibleForGovernedReview": true,
+    "automaticPromotion": false
+  }
 }
