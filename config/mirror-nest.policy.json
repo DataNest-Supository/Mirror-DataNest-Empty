@@ -1,0 +1,12 @@
+{
+  "schemaVersion":"mirror-nest-v1",
+  "repository":"DataNest-Supository/Mirror-Nest",
+  "canonicalRepository":"DataNest-Supository/DataNest",
+  "role":"mirror-exchange",
+  "purpose":"Controlled landing and validation surface for canonical DataNest snapshots, provenance, integration evidence, and owner-directed handoff.",
+  "authorities":{"canonicalSource":"DataNest-Supository/DataNest","sourceControl":"GitHub","validation":"Mirror-Nest workflows","production":false,"canonicalRelease":false,"canonicalGovernance":false},
+  "functions":["canonical snapshot intake","provenance and evidence recording","contract validation","controlled handoff","authority separation"],
+  "boundaries":{"canonicalDirectPush":false,"productionSecrets":false,"productionBackendWrites":false,"reverseAutomaticSync":false,"unreviewedCanonicalPromotion":false},
+  "layout":{"lineage":".datanest/coordination/canonical-lineage.json","manifest":"config/mirror-nest.manifest.json","handoff":"handoff/","evidence":"evidence/","snapshots":"snapshots/"},
+  "adoption":{"mode":"explicit-owner-directed","promotionAuthority":"DataNest-Supository/DataNest"}
+}
