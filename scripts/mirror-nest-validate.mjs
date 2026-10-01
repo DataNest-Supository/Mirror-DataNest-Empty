@@ -30,13 +30,16 @@ export function validateMirrorNest() {
   const required = [
     ".github/workflows/branch-protection-tree.yml",
     ".github/workflows/mirror-nest-validation.yml",
+    ".github/workflows/mirror-nest-intake.yml",
     ".github/CODEOWNERS",
     "config/branch-protection.tree.json",
     "config/mirror-nest.policy.json",
     "config/mirror-nest.manifest.json",
+    "config/mirror-nest-intake.contract.json",
     "scripts/branch-protection-tree.mjs",
     "tests/unit/branch-protection-tree.test.mjs",
     "tests/unit/mirror-nest-contract.test.mjs",
+    "tests/unit/mirror-nest-intake.test.mjs",
     "docs/governance/BRANCH_X_PROTECTION.md",
     "docs/MIRROR_NEST_FUNCTIONS.md"
   ];
