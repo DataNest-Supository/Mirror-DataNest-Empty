@@ -1,0 +1,15 @@
+{
+  "schemaVersion":"mirror-handoff-v1",
+  "kind":"governed-handoff",
+  "canonicalRepository":"DataNest-Supository/DataNest",
+  "canonicalSha":"0000000000000000000000000000000000000000",
+  "sourcePath":"snapshots/example",
+  "destinationRepository":"DataNest-Supository/DataNest",
+  "adoptionMode":"explicit-owner-directed",
+  "validation":{
+    "workflow":"Mirror-Nest Validation Tree",
+    "result":"pending",
+    "evidencePath":"evidence/example.json"
+  },
+  "automaticPromotion":false
+}
