@@ -60,7 +60,8 @@ jobs:
           tmp="$(mktemp)"
           jq --arg sha "$CANONICAL_SHA" '
             .source.sha = $sha |
-            .provenance.digest = ("sha256:canonical-" + $sha)
+            .provenance.sourceCommitId = $sha |
+            .provenance.digestStatus = "not-computed"
           ' config/mirror-nest.manifest.json > "$tmp"
           mv "$tmp" config/mirror-nest.manifest.json
 
