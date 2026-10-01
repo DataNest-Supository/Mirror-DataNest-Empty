@@ -3,6 +3,8 @@ name: Mirror-Nest Intake Gate
 on:
   pull_request:
     branches: [main, "release/**"]
+  push:
+    branches: [main, "release/**", "automation/**", "audit/**", "ci/**"]
   workflow_dispatch:
 
 permissions:
