@@ -1,6 +1,6 @@
 {
   "schemaVersion":"datanest-branch-protection-v1",
-  "authority":"DataNest-Supository/Mirror-Nest",
+  "authority":"DataNest-Supository/MirrorNest",
   "tree":"BRANCH-X",
   "purpose":"Repository-native branch governance for the Mirror-Nest exchange surface.",
   "enforcementModel":"github-native-when-admin-protection-is-available-plus-repository-native-preflight",
