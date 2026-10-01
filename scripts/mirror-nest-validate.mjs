@@ -12,7 +12,7 @@ function assert(condition, message) {
 
 export function validateMirrorNest() {
   assert(policy.schemaVersion === "mirror-nest-v1", "unsupported Mirror-Nest policy schema");
-  assert(policy.repository === "DataNest-Supository/Mirror-Nest", "repository identity mismatch");
+  assert(policy.repository === "DataNest-Supository/MirrorNest", "repository identity mismatch");
   assert(policy.canonicalRepository === "DataNest-Supository/DataNest", "canonical repository mismatch");
   assert(policy.authorities.production === false, "Mirror-Nest cannot be production authority");
   assert(policy.authorities.canonicalRelease === false, "Mirror-Nest cannot be canonical release authority");
