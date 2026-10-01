@@ -1,0 +1,15 @@
+{
+  "schemaVersion":"mirror-evidence-v1",
+  "kind":"validation-evidence",
+  "subject":"snapshot-or-handoff-identifier",
+  "canonicalRepository":"DataNest-Supository/DataNest",
+  "canonicalSha":"0000000000000000000000000000000000000000",
+  "validationRun":"pending",
+  "result":"pending",
+  "checks":{
+    "lineage":"pending",
+    "scopeBoundary":"pending",
+    "secretExclusion":"pending",
+    "authorityBoundary":"pending"
+  }
+}
