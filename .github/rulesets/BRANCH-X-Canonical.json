@@ -38,16 +38,13 @@
         "do_not_enforce_on_create": false,
         "required_status_checks": [
           {
-            "context": "BRANCH-X Protection Tree",
-            "integration_id": -1
+            "context": "BRANCH-X Protection Tree"
           },
           {
-            "context": "Mirror-Nest Validation Tree",
-            "integration_id": -1
+            "context": "Mirror-Nest Validation Tree"
           },
           {
-            "context": "Mirror-Nest Intake Gate",
-            "integration_id": -1
+            "context": "Mirror-Nest Intake Gate"
           }
         ],
         "strict_required_status_checks_policy": true
