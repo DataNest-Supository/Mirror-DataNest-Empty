@@ -30,7 +30,7 @@ jobs:
       - name: Verify BRANCH-X unit contract
         run: node --test tests/unit/branch-protection-tree.test.mjs
       - name: Verify canonical push semantics
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.before != '0000000000000000000000000000000000000000'
         shell: bash
         run: |
           set -euo pipefail
