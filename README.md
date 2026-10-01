@@ -1,3 +1,5 @@
-# Resonance AppDev Mirror-DataNest-Empty
+# Mirror-DataNest-Empty
 
-Reserved empty repository. BRANCH-X governance will be bootstrapped when an initial Git commit exists.
+Reserved Resonance AppDev mirror repository.
+
+BRANCH-X provides the repository-native branch governance contract from the first commit onward. GitHub-native branch protection remains the authoritative host-level enforcement layer when administration credentials are available.

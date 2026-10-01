@@ -1,0 +1,42 @@
+name: BRANCH-X Protection Tree
+on:
+  pull_request:
+    branches:
+      - main
+      - "release/**"
+  push:
+    branches:
+      - main
+      - "release/**"
+      - "automation/**"
+      - "audit/**"
+      - "ci/**"
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+concurrency:
+  group: branch-protection-tree-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    name: BRANCH-X Protection Tree
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Verify branch policy
+        run: node scripts/branch-protection-tree.mjs
+      - name: Verify BRANCH-X unit contract
+        run: node --test tests/unit/branch-protection-tree.test.mjs
+      - name: Verify canonical push semantics
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          parent="$(git rev-list --parents -n 1 "$GITHUB_SHA")"
+          count="$(printf '%s\n' "$parent" | awk '{print NF-1}')"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::BRANCH-X detected an initial/rewritten main history state."
+            exit 1
+          fi
