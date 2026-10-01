@@ -29,3 +29,12 @@ Mirror-Nest does not own canonical production deployment, production backend wri
 - .datanest/coordination/ — canonical lineage records
 
 Mirror-Nest is an exchange and evidence surface, not a second system of record.
+
+
+## Intake rules
+
+All proposed Mirror-Nest changes pass the intake contract before governed adoption.
+
+Accepted material must remain under the declared repository control, snapshot, handoff, evidence, or documentation roots. Credential files, environment files, private keys, database files, live backend state, and similar sensitive runtime state are rejected.
+
+A handoff identifies its canonical DataNest commit, source path, destination repository, validation evidence, and explicit non-automatic adoption mode. The handoff contract cannot authorize production on its own.
