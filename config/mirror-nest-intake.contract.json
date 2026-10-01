@@ -1,0 +1,34 @@
+{
+  "schemaVersion":"mirror-nest-intake-v1",
+  "repository":"DataNest-Supository/MirrorNest",
+  "acceptedRoots":["snapshots/","handoff/","evidence/","config/","docs/","scripts/","tests/","\.github/","\.datanest/"],
+  "forbiddenPatterns":[
+    "(^|/)(\.env|\.env\.[^/]+)$",
+    "(^|/)(id_rsa|id_ed25519|credentials|secrets?)(\.|/|$)",
+    "(^|/).*(service[_-]?role|access[_-]?token|private[_-]?key).*$",
+    "\\.(pem|key|p12|pfx|jks|keystore)$",
+    "\\.(sqlite|sqlite3|db)$",
+    "(^|/)(supabase/.temp|node_modules|\.git)(/|$)"
+  ],
+  "snapshot":{
+    "requiredFields":["schemaVersion","kind","canonicalRepository","canonicalBranch","canonicalSha","scope","createdFor"],
+    "kind":"mirror-snapshot"
+  },
+  "handoff":{
+    "requiredFields":["schemaVersion","kind","canonicalRepository","canonicalSha","sourcePath","destinationRepository","adoptionMode","validation"],
+    "kind":"governed-handoff",
+    "destinationRepository":"DataNest-Supository/DataNest",
+    "automaticPromotion":false
+  },
+  "evidence":{
+    "requiredFields":["schemaVersion","kind","subject","canonicalRepository","canonicalSha","validationRun","result"],
+    "kind":"validation-evidence"
+  },
+  "principles":[
+    "no production credentials",
+    "no live backend state",
+    "no automatic reverse promotion",
+    "full canonical commit SHA for provenance",
+    "governed adoption remains a separate decision"
+  ]
+}
