@@ -26,6 +26,8 @@ It is intentionally **not** a second production system of record. Its functions 
 - `.github/workflows/mirror-nest-validation.yml` — functional validation gate
 - `config/branch-protection.tree.json` — BRANCH-X branch governance
 - `docs/MIRROR_NEST_FUNCTIONS.md` — operating model
+- `config/mirror-nest-intake.contract.json` — accepted/forbidden intake contract
+- `.github/workflows/mirror-nest-intake.yml` — pre-handoff intake gate
 
 ## Directories
 
