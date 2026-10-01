@@ -1,0 +1,18 @@
+{
+  "schemaVersion":"mirror-snapshot-v1",
+  "kind":"mirror-snapshot",
+  "canonicalRepository":"DataNest-Supository/DataNest",
+  "canonicalBranch":"main",
+  "canonicalSha":"0000000000000000000000000000000000000000",
+  "scope":{
+    "paths":[],
+    "productionArtifactsIncluded":false,
+    "secretsIncluded":false,
+    "backendStateIncluded":false
+  },
+  "createdFor":"describe-the-mirror-purpose",
+  "validation":{
+    "workflow":"Mirror-Nest Validation Tree",
+    "result":"pending"
+  }
+}
