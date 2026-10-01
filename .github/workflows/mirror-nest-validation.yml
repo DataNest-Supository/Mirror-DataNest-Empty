@@ -1,0 +1,30 @@
+name: Mirror-Nest Validation
+
+on:
+  pull_request:
+    branches: [main, "release/**"]
+  push:
+    branches: [main, "release/**", "automation/**", "audit/**", "ci/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: mirror-nest-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Mirror-Nest Validation Tree
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Validate Mirror-Nest contract
+        run: node scripts/mirror-nest-validate.mjs
+      - name: Validate Mirror-Nest unit contract
+        run: node --test tests/unit/mirror-nest-contract.test.mjs
