@@ -16,3 +16,6 @@
 /snapshots/ @DataNest-Supository
 /handoff/ @DataNest-Supository
 /evidence/ @DataNest-Supository
+
+/scripts/canonical-write-watchdog.mjs @DataNest-Supository
+/tests/unit/canonical-write-watchdog.test.mjs @DataNest-Supository
