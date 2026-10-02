@@ -1,11 +1,11 @@
 {
-  "schemaVersion":"mirror-nest-lineage-v1",
-  "canonicalRepository":"DataNest-Supository/DataNest",
-  "canonicalBranch":"main",
-  "canonicalSha":"02f4cfcf8317ebc87b8b71276db74996a528fd04",
-  "mirrorRepository":"DataNest-Supository/MirrorNest",
-  "mirrorBranch":"main",
-  "lineageStatus":"declared",
-  "validationWorkflow":"Mirror-Nest Validation Tree",
-  "automaticPromotion":false
+  "schemaVersion": "mirror-nest-lineage-v1",
+  "canonicalRepository": "DataNest-Supository/DataNest",
+  "canonicalBranch": "main",
+  "canonicalSha": "f10c39c2b11d41d1019fbae9ecc6050f97596230",
+  "mirrorRepository": "DataNest-Supository/MirrorNest",
+  "mirrorBranch": "main",
+  "lineageStatus": "reconciled",
+  "validationWorkflow": "Mirror-Nest Validation Tree",
+  "automaticPromotion": false
 }
