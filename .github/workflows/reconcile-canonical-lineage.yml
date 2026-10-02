@@ -89,8 +89,14 @@ jobs:
           mv "$tmp" .datanest/coordination/canonical-lineage.json
 
           git add config/mirror-nest.manifest.json .datanest/coordination/canonical-lineage.json
-          git -c user.name="github-actions[bot]"               -c user.email="41898282+github-actions[bot]@users.noreply.github.com"               commit -m "chore: reconcile canonical DataNest lineage"
-          git push origin "$branch"
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "chore: reconcile canonical DataNest lineage"
+            git push origin "$branch"
+          else
+            echo "Reconciliation branch already contains the requested lineage state."
+          fi
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
       - name: Create or reuse reconciliation PR
