@@ -31,6 +31,17 @@ jobs:
           git remote add canonical https://github.com/DataNest-Supository/DataNest.git
           git fetch canonical main --prune
 
+      - name: Validate coordination lineage state
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '
+            type == "object" and
+            (.schemaVersion == "mirror-canonical-lineage-v1" or .schemaVersion == "mirror-canonical-lineage-v2") and
+            (.canonicalSha | type == "string" and test("^[0-9a-fA-F]{40}$")) and
+            (.lineageStatus | type == "string")
+          ' .datanest/coordination/canonical-lineage.json >/dev/null
+
       - name: Compare declared lineage
         id: compare
         shell: bash
@@ -55,7 +66,12 @@ jobs:
         run: |
           set -euo pipefail
           branch="sync/canonical-lineage-${CANONICAL_SHA:0:12}"
-          git switch -c "$branch"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            git fetch origin "$branch"
+            git switch -C "$branch" "origin/$branch"
+          else
+            git switch -c "$branch"
+          fi
 
           tmp="$(mktemp)"
           jq --arg sha "$CANONICAL_SHA" '
@@ -79,6 +95,7 @@ jobs:
 
       - name: Create or reuse reconciliation PR
         if: steps.compare.outputs.changed == 'true'
+        id: pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.branch.outputs.branch }}
@@ -87,17 +104,59 @@ jobs:
         run: |
           set -euo pipefail
           api="https://api.github.com/repos/DataNest-Supository/MirrorNest/pulls"
-          open="$(curl -fsSL             -H "Authorization: Bearer $GITHUB_TOKEN"             -H "Accept: application/vnd.github+json"             "$api?state=open&base=main&head=DataNest-Supository:$BRANCH")"
+          response_file="$(mktemp)"
+          http_code="$(curl -sSL \
+            -o "$response_file" \
+            -w "%{http_code}" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "$api?state=open&base=main&head=DataNest-Supository:$BRANCH")"
 
-          if [ "$(printf '%s' "$open" | jq 'length')" -gt 0 ]; then
-            echo "Existing reconciliation PR: $(printf '%s' "$open" | jq -r '.[0].html_url')"
-            exit 0
-          fi
+          case "$http_code" in
+            200)
+              open="$(cat "$response_file")"
+              if [ "$(printf '%s' "$open" | jq 'length')" -gt 0 ]; then
+                echo "Existing reconciliation PR: $(printf '%s' "$open" | jq -r '.[0].html_url')"
+                echo "manual_handoff=false" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              ;;
+            403)
+              echo "::notice::GitHub Actions cannot query pull requests with the current repository Actions policy."
+              echo "::notice::Enable the repository setting that allows GitHub Actions to create and approve pull requests, or create the reconciliation PR manually."
+              echo "manual_handoff=true" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+            *)
+              cat "$response_file" >&2
+              echo "::error::Unexpected GitHub API response while querying reconciliation PRs: HTTP $http_code"
+              exit 1
+              ;;
+          esac
 
           body="Reconcile Mirror-Nest lineage to DataNest main at $CANONICAL_SHA. This updates provenance only; it does not copy production state, grant production authority, or auto-promote anything."
-          jq -n             --arg title "Reconcile canonical DataNest lineage"             --arg head "$BRANCH"             --arg body "$body"             '{title:$title,head:$head,base:"main",body:$body}' |
-            curl -fsSL -X POST               -H "Authorization: Bearer $GITHUB_TOKEN"               -H "Accept: application/vnd.github+json"               -H "X-GitHub-Api-Version: 2022-11-28"               "$api"               --data-binary @- |
-            jq -e '.number and .html_url' >/dev/null
+          payload="$(jq -n \
+            --arg title "Reconcile canonical DataNest lineage" \
+            --arg head "$BRANCH" \
+            --arg body "$body" \
+            '{title:$title,head:$head,base:"main",body:$body}')"
+          create_file="$(mktemp)"
+          create_code="$(printf '%s' "$payload" | curl -sSL \
+            -o "$create_file" \
+            -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$api" \
+            --data-binary @-)"
+          if [ "$create_code" != "201" ]; then
+            cat "$create_file" >&2
+            echo "::error::GitHub API failed to create reconciliation PR: HTTP $create_code"
+            exit 1
+          fi
+          jq -e '.number and .html_url' "$create_file" >/dev/null
+          echo "manual_handoff=false" >> "$GITHUB_OUTPUT"
 
       - name: Summary
         if: always()
@@ -108,4 +167,7 @@ jobs:
             echo "- Declared SHA: ${{ steps.compare.outputs.declared_sha }}"
             echo "- Reconciliation required: ${{ steps.compare.outputs.changed }}"
             echo "- Automatic promotion: disabled"
+            if [ "${{ steps.pr.outputs.manual_handoff }}" = "true" ]; then
+              echo "- PR handoff: manual action required at https://github.com/DataNest-Supository/MirrorNest/pull/new/${{ steps.branch.outputs.branch }}"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
